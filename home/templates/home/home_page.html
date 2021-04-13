@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n wagtailcore_tags %}
+
+
+{% block body_class %}template-homepage{% endblock %}
+
+{% block extra_css %}
+
+{% comment %}
+Delete the line below if you're just getting started and want to remove the welcome screen!
+{% endcomment %}
+
+{% endblock extra_css %}
+
+{% block content %}
+{% for translation in page.get_translations.live %}
+    {% get_language_info for translation.locale.language_code as lang %}
+    <a href="{% pageurl translation %}" rel="alternate" hreflang="{{ language_code }}">
+        {{ lang.name_local }}
+    </a>
+{% endfor %}
+{% comment %}
+Delete the line below if you're just getting started and want to remove the welcome screen!
+{% endcomment %}
+
+
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags  %}
+
+{% block body_class %}template-blogindexpage{% endblock %}
+
+{% block content %}
+
+ {% comment %} <h3><a href=" {% routablepageurl page 'latest_post' %}"> latest blog<a></h3> {% endcomment %}
+ <h2>Other way for categories </h2>
+        <ul>
+    {% comment %} {% for cat in categories %}
+            <li>
+                <a href="?category={{cat.slug}}">{{cat.name}}</a>
+            </li>
+            {% endfor %}
+        </ul> {% endcomment %}
+
+ {% comment %} <h3>spacial link is = {{a_special_link}} </h3> {% endcomment %}
+    <h1>{{ page.title }}</h1>
+
+    <div class="intro">{{ page.intro|richtext }}</div>
+
+    {% for products in products_list %}
+    {% with products=products.specific %}
+        <h2><a href="{% pageurl products %}">{{ products.title }}</a></h2>
+        
+
+        {% with post.main_image as main_image %}
+            {% if main_image %}{% image main_image fill-160x100 %}{% endif %}
+        {% endwith %}
+
+        {% comment %} <p>{{ post.intro }}</p>
+        {{ post.body|richtext }} {% endcomment %}
+    {% endwith %}
+{% endfor %}
+
+{% endblock %}

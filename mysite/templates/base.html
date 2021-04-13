@@ -1,0 +1,76 @@
+{% load static wagtailuserbar %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>
+            {% block title %}
+                {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
+            {% endblock %}
+            {% block title_suffix %}
+                {% with self.get_site.site_name as site_name %}
+                    {% if site_name %}- {{ site_name }}{% endif %}
+                {% endwith %}
+            {% endblock %}
+        </title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {# Global stylesheets #}
+        <link rel="preconnect" href="https://app.snipcart.com">
+        <link rel="preconnect" href="https://cdn.snipcart.com">
+        <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.0.29/default/snipcart.css" />
+        {% comment %} <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css"> {% endcomment %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/mysite.css' %}">
+
+        {% block extra_css %}
+            {# Override this in templates to add extra stylesheets #}
+        {% endblock %}
+    </head>
+
+    <body class="{% block body_class %}{% endblock %}">
+        {% wagtailuserbar %}
+        <div class="container grid-lg">
+    <header class="navbar">
+
+        <section class="navbar-section">
+            <a href="/" class="navbar-brand mr-2">
+                Products
+            </a>
+        </section>
+
+        <!-- Snipcart summary and View cart button -->
+        <section class="navbar-section snipcart-summary">
+            <div class="input-group input-line">
+                <a href="" class="btn btn-primary snipcart-checkout">
+                    <i class="icon icon-apps"></i>
+                    View cart (<span class="snipcart-total-items">0</span>)
+                </a>
+            </div>
+        </section>
+
+    </header>
+</div>
+
+<div class="container grid-lg">
+
+        {% block content %}{% endblock %}
+
+        {# Global javascript #}
+        {% comment %} {% if settings.site_settings.SnipcartSettings.api_key %}{% endif %} {% endcomment %}
+            
+            <script async src="https://cdn.snipcart.com/themes/v3.0.29/default/snipcart.js"></script>
+            <div hidden id="snipcart" data-api-key="NmJiYTYzOWMtZDc4NS00YjhjLWJmZTEtOWIzYTNlNWVjZDg5NjM3NDczOTA2MTM2MDUzNjQ3" data-config-modal-style="side"></div>
+        
+        <script type="text/javascript" src="{% static 'js/mysite.js' %}"></script>
+
+      
+        {% block extra_js %}
+            {# Override this in templates to add extra javascript #}
+            
+        {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,49 @@
+
+{% extends "base.html" %}
+{% load wagtailimages_tags %}
+
+{% block content %}
+  
+    <label>Quantity</label>
+<input id="quantity" type="number"></input
+<label>Frame color</label>
+<select id="frame_color">
+  <option value="Black">Black</option>
+  <option value="Brown">Brown</option>
+  <option value="Gold">Gold</option>
+</select>
+<button
+  id="starry-night"
+  class="snipcart-add-item"
+  data-item-id="starry-night"
+  data-item-price="79.99"
+  data-item-url="/paintings/starry-night"
+  data-item-description="High-quality replica of The Starry Night by the Dutch post-impressionist painter Vincent van Gogh."
+  data-item-image="/assets/images/starry-night.jpg"
+  data-item-name="The Starry Night"
+  data-item-custom1-name="Frame color"
+  data-item-custom1-options="Black|Brown|Gold"
+  data-item-custom2-name="Gift note">
+  Add to cart
+</button>
+<button class="snipcart-checkout">Click here to checkout</button>
+<span class="snipcart-items-count"></span>
+<span class="snipcart-total-price"></span>
+
+
+<script>
+const button = document.querySelector('#starry-night')
+const quantity = document.querySelector('#quantity')
+quantity.addEventListener('change', () => {
+  // Sets the default quantity when adding the item
+  button.setAttribute('data-item-quantity', quantity.value)
+})
+const select = document.querySelector('#frame_color')
+select.addEventListener('change', () => {
+  // Sets the default frame color when adding the item
+  button.setAttribute("data-item-custom1-value", select.value)
+})
+</script>
+
+
+{% endblock %}
