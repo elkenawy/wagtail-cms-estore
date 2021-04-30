@@ -4,7 +4,7 @@ from wagtail.contrib.modeladmin.options import (
     modeladmin_register
     )
 from wagtail.contrib.modeladmin.mixins import ThumbnailMixin
-from .models import ProductDetailPage, CategoryPr
+from .models import ProductDetailPage, Category
 
 
 
@@ -35,7 +35,7 @@ class CategoryModelAdmin(ThumbnailMixin, ModelAdmin):
     thumb_default = 'https://lorempixel.com/100/100' 
     """
 
-    model = CategoryPr
+    model = Category
     menu_icon = "group"
     menu_label = 'Category'
     list_per_page = 10 

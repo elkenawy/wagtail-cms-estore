@@ -11,6 +11,7 @@ from wagtail.contrib.settings.models import BaseSetting, register_setting
 class SocialMediaSettings(BaseSetting):
     """social media setting for cutom website """
 
+    
     facebook = models.URLField(blank=True, null=True, help_text='Facebook URL')
     twitter = models.URLField(blank=True, null=True, help_text='Twitter URL')
     youtube = models.URLField(blank=True, null=True, help_text='YouTube URL')

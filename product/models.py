@@ -1,10 +1,10 @@
 
-from rest_framework import  serializers
+from rest_framework import serializers
 from django.db import models
 from django import forms
 from modelcluster.models import ClusterableModel
 from rest_framework.fields import Field
-from wagtail.snippets.models import  register_snippet
+from wagtail.snippets.models import register_snippet
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.core.models import TranslatableMixin
 from django.conf import settings
@@ -26,7 +26,7 @@ from django.utils.safestring import mark_safe
 from wagtail.core.fields import StreamField
 from wagtail.api import APIField
 from modelcluster.contrib.taggit import ClusterTaggableManager
-from taggit.models import TagBase, ItemBase
+from taggit.models import TagBase, ItemBase, TaggedItemBase
 
 # Create your models here.
 
@@ -39,39 +39,46 @@ class ImageSerializedField(Field):
         root = 'http://localhost:8000'
         return {
             "id": value.id,
-            "src":root+value.file.url,
+            "src": root+value.file.url,
             "alt": value.title,
             "width": value.width,
             "height": value.height,
         }
 
 
-class ProductTag(TagBase):
-    class Meta:
-        verbose_name = "Product tag"
-        verbose_name_plural = "Product tags"
-
-
-class TaggedProduct(ItemBase):
-    tag = models.ForeignKey(
-        ProductTag, related_name="tagged_Products", on_delete=models.CASCADE
-    )
+class ProductTag(TaggedItemBase):
     content_object = ParentalKey(
-        to='product.ProductDetailPage',
+        'product.ProductDetailPage',
+        related_name='tagged_items',
         on_delete=models.CASCADE,
-        related_name='tagged_items'
     )
+
+# class ProductTag(TagBase):
+#     class Meta:
+#         verbose_name = "Product tag"
+#         verbose_name_plural = "Product tags"
+
+
+# class TaggedProduct(ItemBase):
+#     tag = models.ForeignKey(
+#         ProductTag, related_name="tagged_Products", on_delete=models.CASCADE
+#     )
+#     content_object = ParentalKey(
+#         to='product.ProductDetailPage',
+#         on_delete=models.CASCADE,
+#         related_name='tagged_items'
+#     )
 
 @register_snippet
 class Brand(models.Model):
     title = models.CharField(max_length=255)
-    
+
     api_fields = [
         APIField("title")
     ]
-    
+
     panels = [
-        FieldPanel('title'),      
+        FieldPanel('title'),
     ]
 
     def __str__(self):
@@ -91,6 +98,7 @@ class Collections(models.Model):
     api_fields = [
         APIField("title")
     ]
+
     def __str__(self):
         return self.title
 
@@ -102,18 +110,14 @@ class Collections(models.Model):
 class Color(models.Model):
     name = models.CharField(max_length=20)
     code = models.CharField(max_length=10, blank=True, null=True)
-    
+
     api_fields = [
         APIField("name")
     ]
+
     def __str__(self):
         return self.name
 
-#     def color_tag(self):
-#         if self.code is not None:
-#             return mark_safe('<p style="background-color:{}">Color </p>'.format(self.code))
-#         else:
-#             return ""
 
 @register_snippet
 class Size(models.Model):
@@ -128,14 +132,13 @@ class Size(models.Model):
         return self.name
 
 
-
 @register_snippet
-class CategoryPr(TranslatableMixin, MPTTModel, models.Model):
+class Category(TranslatableMixin, MPTTModel, models.Model):
     # parent = models.ForeignKey(
     #     'self', related_name='children', on_delete=models.CASCADE, blank=True, null=True)
-    
-    parent =  TreeForeignKey('self', on_delete=models.CASCADE, null=True,
-                   blank=True, related_name='children')
+
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True,
+                            blank=True, related_name='children')
     title = models.CharField(max_length=255)
     slug = AutoSlugField(
         populate_from='title',
@@ -146,25 +149,12 @@ class CategoryPr(TranslatableMixin, MPTTModel, models.Model):
         # help_text='A Slug to identify posts by this Category'
     )
     icon = models.ForeignKey(
-        'wagtailimages.Image', on_delete=models.CASCADE, related_name='+',blank=True,null=True
+        'wagtailimages.Image', on_delete=models.CASCADE, related_name='+', blank=True, null=True
     )
 
-    def name_with_depth(self):
-        depth = '— ' * (self.get_children() - 1)
-        return depth + self.name
-    name_with_depth.short_description = 'Name'
-   
     class MPTTMeta:
         order_insertion_by = ['title']
 
-    # def __unicode__(self):
-    #     return self.name_with_depth()
-
-    # def __str__(self):
-    #     return self.name_with_depth()
-
-    # def get_absolute_url(self):
-    #     return reverse('category_detail', kwargs={'slug': self.slug})
     api_fields = [
         APIField("parent"),
         APIField("title"),
@@ -176,27 +166,19 @@ class CategoryPr(TranslatableMixin, MPTTModel, models.Model):
         FieldPanel('title'),
         FieldPanel('slug'),
         ImageChooserPanel('icon'),
-      
+
     ]
 
     def __str__(self):
         return self.title
 
 
-
-
-
-
-
 class Store(Page):
     intro = RichTextField(blank=True)
-
-    
 
     content_panels = Page.content_panels + [
         FieldPanel('intro', classname="full")
     ]
-
 
 
 class ProductIndexPage(Page):
@@ -210,19 +192,18 @@ class ProductIndexPage(Page):
     templates = 'product/product_index_page.html'
 
     def get_context(self, request):
-            # Update context to include only published posts, ordered by reverse-chron
-            context = super().get_context(request)
-            products_list = self.get_children().live().order_by('-first_published_at')
-            context['products_list'] = products_list
+        # Update context to include only published posts, ordered by reverse-chron
+        context = super().get_context(request)
+        products_list = self.get_children().live().order_by('-first_published_at')
+        context['products_list'] = products_list
 
-            return context
-
+        return context
 
 
 class ProductDetailPage(Page):
     """parental Product detail page"""
     template = 'product/product_detail_page.html'
-    tags = ClusterTaggableManager(through='product.TaggedProduct', blank=True)
+    tags = ClusterTaggableManager(through='product.ProductTag', blank=True)
     brand = models.ForeignKey(
         'product.brand',
         null=True,
@@ -232,7 +213,7 @@ class ProductDetailPage(Page):
     )
     # categories = ParentalManyToManyField('product.ProductCategory', blank=True)
     category = ParentalManyToManyField(
-        'product.CategoryPr', blank=True, )
+        'product.Category', blank=True, )
     # name = models.CharField(max_length=250)
     discount = models.CharField(max_length=250, blank=True, null=True)
     description = RichTextField(blank=True)
@@ -242,16 +223,13 @@ class ProductDetailPage(Page):
     new = models.BooleanField(default=True, verbose_name='New')
     collection = ParentalManyToManyField(Collections, blank=True)
     stock = models.PositiveIntegerField(default=0)
-   
-   
 
     parent_page_types = ['ProductIndexPage']
     subpage_types = []
 
-    def clean(self):
-        super(ProductDetailPage, self).clean()
-        self.tags = "{} {}".format(self.collection, self.brand)
-
+    # def clean(self):
+    #     super(ProductDetailPage, self).clean()
+    #     self.tags = "{} {}".format(self.collection, self.brand)
 
     # def main_image(self):
     #     gallery_item = self.gallery_images.first()
@@ -260,7 +238,6 @@ class ProductDetailPage(Page):
     #     else:
     #         return None
 
-   
     # def get_context(self, request):
     #     context = super().get_context(request)
     #     fields = []
@@ -274,26 +251,26 @@ class ProductDetailPage(Page):
     #     context['product_Variant'] = fields
     #     return context
 
-    
     # content = StreamField([
     #     ('variant', blocks.VariantBlock()),
-    
+
     # ])
     search_fields = Page.search_fields + [
         index.SearchField('title'),
         index.SearchField('description'),
-      
+
     ]
     api_fields = [
         # APIField('name'),
         APIField('description'),
-        
+        APIField('slug'),
+
         APIField('tags'),
         APIField('new'),
         APIField('sale'),
         APIField('price'),
         APIField('stock'),
-        APIField('brand',serializer=serializers.StringRelatedField()),
+        APIField('brand', serializer=serializers.StringRelatedField()),
         APIField(
             'collection', serializer=serializers.StringRelatedField(many=True)),
         APIField(
@@ -323,14 +300,14 @@ class ProductDetailPage(Page):
             FieldPanel('collection', widget=forms.CheckboxSelectMultiple),
             # StreamFieldPanel('content'),
         ], heading="Product information"),
-        
-       
+
+
         InlinePanel('images', label="images"),
         InlinePanel('variants', label='Variants'),
-        
-        
+
+
     ]
-   
+
 
 class ProductPageGalleryImage(Orderable):
     page = ParentalKey(ProductDetailPage, on_delete=models.CASCADE,
@@ -356,7 +333,7 @@ class ProductPageGalleryImage(Orderable):
     #     images = ProductVariantField.objects.values('page_id','image_id')
     #     self.gallery_images = images
 
-   
+
 class ProductVariantField(Orderable):
     page = ParentalKey(ProductDetailPage, on_delete=models.CASCADE,
                        related_name='variants')
@@ -383,18 +360,14 @@ class ProductVariantField(Orderable):
         APIField("image", serializer=ImageSerializedField()),
 
     ]
-    panels= [
+    panels = [
         SnippetChooserPanel('color'),
         FieldPanel('size'),
         FieldPanel('sku'),
         MultiFieldPanel([
-        ImageChooserPanel('image'),
-        
-        # InlinePanel('gallery_images', label="Gallery images"),
-        ],heading='Image'),
-        
+            ImageChooserPanel('image'),
+
+            # InlinePanel('gallery_images', label="Gallery images"),
+        ], heading='Image'),
+
     ]
-
-    
-
-   

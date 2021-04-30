@@ -1,6 +1,6 @@
 from django.db import models
 
-from wagtail.core.models import Page, Orderable
+from wagtail.core.models import Page, Orderable,TranslatableMixin
 from wagtail.core.fields import RichTextField, StreamField
 from modelcluster.fields import ParentalKey
 from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, PageChooserPanel
@@ -13,6 +13,7 @@ from wagtail.admin.edit_handlers import (
 )
 from rest_framework import serializers
 from rest_framework.fields import Field
+
 
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.images.edit_handlers import ImageChooserPanel
@@ -47,7 +48,8 @@ class snippetSerializedField(Field):
             "alt": value.title,
             }
 
-class HomePageCarouselImages(Orderable):
+
+class HomePageCarouselImages(TranslatableMixin, Orderable, models.Model):
     """Between 1 and 5 images for the home page carousel."""
 
     page = ParentalKey("home.HomePage", related_name="carousel_images")
@@ -69,7 +71,7 @@ class HomePageCarouselImages(Orderable):
     ]
 
 
-class CategoryBanner(Orderable):
+class CategoryBanner(TranslatableMixin, Orderable, models.Model):
     """Between 2 and 2 images """
 
     page = ParentalKey("home.HomePage", related_name="category_banner")
@@ -82,8 +84,9 @@ class CategoryBanner(Orderable):
     )
     content_cat = StreamField([("cta", block.CTABlock())], null=True, blank=True)
 
-    panels = [ImageChooserPanel("image"),
-              StreamFieldPanel("content_cat"),
+    panels = [
+            ImageChooserPanel("image"),
+            StreamFieldPanel("content_cat"),
               ]
     api_fields = [
         APIField("image", serializer=ImageSerializedField()),
