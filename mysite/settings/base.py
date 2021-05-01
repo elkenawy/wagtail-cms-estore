@@ -170,14 +170,25 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'e_commercial',
-        'USER': 'root',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd3l7cocrvljdrn',
+        'USER': 'ikqeeylkhgplvw',
+        'PASSWORD': 'fa1142419c4cb80cb00561465262039658b3de39c42a8b01bc607e0bf3905518',
+        # Or an IP Address that your DB is hosted on
+        'HOST': 'ec2-23-22-191-232.compute-1.amazonaws.com',
+        'PORT': '5432',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql', 
+#         'NAME': 'e_commercial',
+#         'USER': 'root',
+#         'PASSWORD': 'admin',
+#         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+#         'PORT': '3306',
+#     }
+# }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
