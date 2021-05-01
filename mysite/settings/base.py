@@ -170,12 +170,12 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-        'NAME': 'd5mp5tu53g95jb',
-        'USER': 'dpfzzhgkiaucvm',
-        'PASSWORD': 'b12de2f7f0bd4c00b93d4971dbb5a4c1d6166d1fa3dde5ca9896db2a57601386',
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'e_commercial',
+        'USER': 'root',
+        'PASSWORD': 'admin',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '5432',
+        'PORT': '3306',
     }
 }
 # DATABASES = {
