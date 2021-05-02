@@ -35,8 +35,8 @@ INSTALLED_APPS = [
     'blog',
     'mptt',
 
-   
-  
+
+
     # Insert these here
     'wagtail_localize',
     'wagtail_localize.locales',
@@ -56,8 +56,8 @@ INSTALLED_APPS = [
     'wagtail.core',
     'wagtail.api.v2',
     'corsheaders',
-   
-    
+
+
 
     'modelcluster',
     'taggit',
@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_auth',
     'rest_auth.registration',
-    
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -100,9 +100,6 @@ JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
     'JWT_EXPIRATION_DELTA':  datetime.timedelta(days=1),
 }
-
-
-
 
 
 MIDDLEWARE = [
@@ -168,27 +165,27 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd3l7cocrvljdrn',
-        'USER': 'ikqeeylkhgplvw',
-        'PASSWORD': 'fa1142419c4cb80cb00561465262039658b3de39c42a8b01bc607e0bf3905518',
-        # Or an IP Address that your DB is hosted on
-        'HOST': 'ec2-23-22-191-232.compute-1.amazonaws.com',
-        'PORT': '5432',
-    }
-}
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql', 
-#         'NAME': 'e_commercial',
-#         'USER': 'root',
-#         'PASSWORD': 'admin',
-#         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-#         'PORT': '3306',
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'd3l7cocrvljdrn',
+#         'USER': 'ikqeeylkhgplvw',
+#         'PASSWORD': 'fa1142419c4cb80cb00561465262039658b3de39c42a8b01bc607e0bf3905518',
+#         # Or an IP Address that your DB is hosted on
+#         'HOST': 'ec2-23-22-191-232.compute-1.amazonaws.com',
+#         'PORT': '5432',
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'e_commercial',
+        'USER': 'root',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
+    }
+}
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -232,7 +229,7 @@ USE_TZ = True
 
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ("en", _("English")),
-    ("ar",_( "Arabic")),
+    ("ar", _("Arabic")),
 ]
 
 
