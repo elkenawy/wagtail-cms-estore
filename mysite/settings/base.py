@@ -34,9 +34,6 @@ INSTALLED_APPS = [
     'site_settings',
     'blog',
     'mptt',
-
-
-
     # Insert these here
     'wagtail_localize',
     'wagtail_localize.locales',

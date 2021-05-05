@@ -1,6 +1,6 @@
 from django.db import models
 
-from wagtail.core.models import Page, Orderable,TranslatableMixin
+from wagtail.core.models import Page, Orderable, TranslatableMixin
 from wagtail.core.fields import RichTextField, StreamField
 from modelcluster.fields import ParentalKey
 from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, PageChooserPanel
@@ -46,7 +46,7 @@ class snippetSerializedField(Field):
         return {
             "id": value.id,
             "alt": value.title,
-            }
+        }
 
 
 class HomePageCarouselImages(TranslatableMixin, Orderable, models.Model):
@@ -64,7 +64,7 @@ class HomePageCarouselImages(TranslatableMixin, Orderable, models.Model):
 
     panels = [ImageChooserPanel("carousel_image"),
               StreamFieldPanel("content"),
-    ]
+              ]
     api_fields = [
         APIField("carousel_image", serializer=ImageSerializedField()),
         APIField("content"),
@@ -82,12 +82,13 @@ class CategoryBanner(TranslatableMixin, Orderable, models.Model):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    content_cat = StreamField([("cta", block.CTABlock())], null=True, blank=True)
+    content_cat = StreamField(
+        [("cta", block.CTABlock())], null=True, blank=True)
 
     panels = [
-            ImageChooserPanel("image"),
-            StreamFieldPanel("content_cat"),
-              ]
+        ImageChooserPanel("image"),
+        StreamFieldPanel("content_cat"),
+    ]
     api_fields = [
         APIField("image", serializer=ImageSerializedField()),
         APIField("content_cat"),
@@ -98,14 +99,14 @@ class HomePage(Page):
     """Home page model."""
     banner_title = models.CharField(max_length=100, blank=False, null=True)
     banner_subtitle = RichTextField(features=["bold", "italic"])
-    banner_image = models.ForeignKey(
+    parallax_image = models.ForeignKey(
         "wagtailimages.Image",
         null=True,
         blank=False,
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    
+
     banner_cta = models.ForeignKey(
         "wagtailcore.Page",
         null=True,
@@ -113,33 +114,37 @@ class HomePage(Page):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-   
+
     content_panels = Page.content_panels + [
-          MultiFieldPanel(
+        MultiFieldPanel(
             [
                 FieldPanel("banner_title"),
                 FieldPanel("banner_subtitle"),
-                ImageChooserPanel("banner_image"),
             ],
             heading="Banner Options",
         ),
         MultiFieldPanel(
-            [InlinePanel("carousel_images", max_num=5, min_num=1, label="Image")],
+            [InlinePanel("carousel_images", max_num=5,
+                         min_num=1, label="Image")],
             heading="Carousel Images",
         ),
         MultiFieldPanel([
-            InlinePanel("category_banner", max_num=2,
-                         min_num=2, label="Category Banner")
+            ImageChooserPanel("parallax_image"),
+        ], heading="Parallax Image"),
 
-        ],heading="category Banner"),
-       
+        MultiFieldPanel([
+            InlinePanel("category_banner", max_num=2,
+                        min_num=2, label="Category Banner")
+
+        ], heading="category Banner"),
+
     ]
 
     api_fields = [
         APIField("banner_title"),
         APIField("banner_subtitle"),
-        APIField("banner_image", serializer=ImageSerializedField()),
+        APIField("parallax_image", serializer=ImageSerializedField()),
         APIField("carousel_images"),
         APIField("category_banner"),
-        
+
     ]

@@ -227,34 +227,7 @@ class ProductDetailPage(Page):
     parent_page_types = ['ProductIndexPage']
     subpage_types = []
 
-    # def clean(self):
-    #     super(ProductDetailPage, self).clean()
-    #     self.tags = "{} {}".format(self.collection, self.brand)
 
-    # def main_image(self):
-    #     gallery_item = self.gallery_images.first()
-    #     if gallery_item:
-    #         return gallery_item.image
-    #     else:
-    #         return None
-
-    # def get_context(self, request):
-    #     context = super().get_context(request)
-    #     fields = []
-    #     for f in self.product_Variant.get_object_list():
-    #         if f.options:
-    #             f.options_array = f.options.split('|')
-    #             fields.append(f)
-    #         else:
-    #             fields.append(f)
-
-    #     context['product_Variant'] = fields
-    #     return context
-
-    # content = StreamField([
-    #     ('variant', blocks.VariantBlock()),
-
-    # ])
     search_fields = Page.search_fields + [
         index.SearchField('title'),
         index.SearchField('description'),
